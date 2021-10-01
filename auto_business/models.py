@@ -1,6 +1,7 @@
 from django.db import models
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from core.filters_models_field.decimal_range_field import DecimalRangeField
 
 
 # Create your models here.
@@ -9,7 +10,7 @@ class Cars(models.Model):
     model = models.CharField(max_length=30)
     color = models.CharField(max_length=30)
     year = models.IntegerField(validators=[MinValueValidator(1960), MaxValueValidator(3000)])
-    engine = models.DecimalField(max_digits=3,validators=[MinValueValidator(0.6), MaxValueValidator(9.0)], decimal_places=1)
+    engine = DecimalRangeField(max_digits=3, decimal_places=1, min_value=0.6, max_value=9.0)
     drive = models.CharField(max_length=15)  # wheel drive, front drive, back drive
     transmission = models.CharField(max_length=12)
     body_type = models.CharField(max_length=20)
@@ -25,7 +26,7 @@ class Cars(models.Model):
 
 class Suppliers(models.Model):
     name = models.CharField(max_length=50)
-    balance = models.DecimalField(max_digits=20, default=0.00, validators=[MinValueValidator(0.00)], decimal_places=2)
+    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
     country = CountryField(multiple=True)
     email = models.EmailField(max_length=254)
     year_of_foundation = models.DateField()
@@ -44,7 +45,7 @@ class Suppliers(models.Model):
 
 class Showrooms(models.Model):
     name = models.CharField(max_length=50)
-    balance = models.DecimalField(max_digits=20, default=0.00, validators=[MinValueValidator(0.00)], decimal_places=2)
+    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
     country = CountryField(multiple=True)
     email = models.EmailField(max_length=254)
     specification = models.JSONField(encoder=None, decoder=None)
@@ -63,17 +64,17 @@ class ShowroomsCarsForSale(models.Model):
     showrooms = models.ForeignKey(Showrooms, on_delete=models.CASCADE)
     cars = models.ForeignKey(Cars, on_delete=models.CASCADE)
     cars_count = models.IntegerField()
-    price = models.DecimalField(max_digits=20, validators=[MinValueValidator(0.00)], decimal_places=2)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
 
 
 class SuppliersCarsForSale(models.Model):
     cars = models.ForeignKey(Cars, on_delete=models.CASCADE)
     suppliers = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=20, validators=[MinValueValidator(0.00)], decimal_places=2)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
 
 
 class Buyers(models.Model):
-    balance = models.DecimalField(max_digits=20, default=0.00, validators=[MinValueValidator(0.00)], decimal_places=2)
+    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
     age = models.IntegerField(validators=[MinValueValidator(14), MaxValueValidator(150)])
@@ -93,7 +94,7 @@ class Buyers(models.Model):
 class BuyersOrder(models.Model):
     id_buyer = models.ForeignKey(Buyers, on_delete=models.PROTECT, related_name="order_id_buyers")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="order_id_car")
-    price = models.DecimalField(max_digits=20, validators=[MinValueValidator(0.00)], decimal_places=2)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
     added_date = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -108,7 +109,7 @@ class SalesShowroomsBuyers(models.Model):
     id_showroom = models.ForeignKey(Showrooms, on_delete=models.PROTECT, related_name="sales_buyers_id_showroom")
     id_buyer = models.ForeignKey(Buyers, on_delete=models.PROTECT, related_name="sales_id_buyers")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="sales_buyer_id_car")
-    price = models.DecimalField(max_digits=20, validators=[MinValueValidator(0.00)], decimal_places=2)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     added_date = models.DateTimeField(auto_now_add=True)
 
@@ -122,7 +123,7 @@ class SalesSuppliersShowrooms(models.Model):
     id_showroom = models.ForeignKey(Showrooms, on_delete=models.PROTECT, related_name="sales_id_showroom")
     id_supplier = models.ForeignKey(Suppliers, on_delete=models.PROTECT, related_name="sales_id_supplier")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="sales_showroom_id_car")
-    price = models.DecimalField(max_digits=20, validators=[MinValueValidator(0.00)], decimal_places=2)
+    price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     added_date = models.DateTimeField(auto_now_add=True)
 
