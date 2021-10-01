@@ -61,15 +61,15 @@ class Showrooms(models.Model):
 
 
 class ShowroomsCarsForSale(models.Model):
-    showrooms = models.ForeignKey(Showrooms, on_delete=models.CASCADE)
-    cars = models.ForeignKey(Cars, on_delete=models.CASCADE)
+    showroom = models.ForeignKey(Showrooms, on_delete=models.CASCADE)
+    car = models.ForeignKey(Cars, on_delete=models.CASCADE)
     cars_count = models.IntegerField()
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
 
 
 class SuppliersCarsForSale(models.Model):
-    cars = models.ForeignKey(Cars, on_delete=models.CASCADE)
-    suppliers = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
+    car = models.ForeignKey(Cars, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
 
 
@@ -165,5 +165,5 @@ class DiscountShowrooms(models.Model):
     def __str__(self):
         template = '{0.id_showroom} {0.description} {0.start_time}' \
                    '{0.end_time} {0.id_car} {0.amount_of_discount}' \
-                   ' {0.is_available} {0.added_date} {0.date_updated}'
+                   '{0.is_available} {0.added_date} {0.date_updated}'
         return template.format(self)
