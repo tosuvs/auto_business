@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 
+load_dotenv("/home/vsevolod/PythonProjects/auto_business_project/.env")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,15 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = os.environ.get("SECRET_KEY")
-SECRET_KEY = 'django-insecure-52ut(2fu-*@kk^wpjlq!w1zs30p=tl8^rkky%%_9!31*6m9-le'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = os.environ.get("DEBUG")
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
-#ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
 
 
 # Application definition
@@ -40,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'auto_business',
+
     'django_countries',
     'django_filters',
-    'rest_framework'
+    'rest_framework',
+
+    'auto_business',
 ]
 
 REST_FRAMEWORK = {
@@ -90,12 +91,12 @@ WSGI_APPLICATION = 'auto_business_project.wsgi.application'
 DATABASES = {
     'default': {
 
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'auto_business',
-        'USER': 'postgres',
-        'PASSWORD': 'strongpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.environ.get("ENGINES"),
+        'NAME': os.environ.get("DATABASE_NAME"),
+        'USER': os.environ.get("DATABASE_USER"),
+        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
+        'HOST': os.environ.get("POSTGRES_HOST"),
+        'PORT': os.environ.get("POSTGRES_PORT"),
 
     }
 }

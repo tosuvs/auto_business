@@ -7,19 +7,19 @@ from .models import Cars, Suppliers, Showrooms, ShowroomsCarsForSale, SuppliersC
 
 @admin.register(Cars)
 class CarsAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
-    list_filter = ("brand", "model", "year", "engine", "drive", "transmission", "body_type",)
+    readonly_fields = ("added_date", "date_updated",)
+    list_filter = ("brand", "model", "year", "color", "engine", "drive", "transmission", "body_type",)
 
 
 @admin.register(Suppliers)
 class SuppliersAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated", "number_of_buyers",)
-    list_filter = ("name", "country", "number_of_buyers", "is_available", "date_created_in_db", "date_updated")
+    readonly_fields = ("added_date", "date_updated", "number_of_buyers",)
+    list_filter = ("name", "country", "number_of_buyers", "is_available", "added_date", "date_updated")
 
 
 @admin.register(Showrooms)
 class ShowroomsAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
+    readonly_fields = ("added_date", "date_updated",)
     list_filter = ("name", "country", "is_available",)
 
 
@@ -35,36 +35,35 @@ class SuppliersCarsForSaleAdmin(admin.ModelAdmin):
 
 @admin.register(Buyers)
 class BuyersAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
-    list_filter = ("name", "surname", "age", "country", "sex", "date_created_in_db", "date_updated",)
+    readonly_fields = ("added_date", "date_updated",)
+    list_filter = ("name", "surname", "age", "country", "sex", "added_date", "date_updated",)
 
 
 @admin.register(BuyersOrder)
 class BuyersOrderAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
-    list_filter = ("price", "date_created_in_db", "date_updated",)
+    readonly_fields = ("added_date", "date_updated",)
+    list_filter = ("price", "added_date", "date_updated",)
 
 
 @admin.register(SalesShowroomsBuyers)
 class SalesShowroomsBuyersAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db",)
-    list_filter = ("price", "amount_of_discount", "date_created_in_db")
+    readonly_fields = ("added_date",)
+    list_filter = ("price", "amount_of_discount", "added_date")
 
 
 @admin.register(SalesSuppliersShowrooms)
 class SalesSuppliersShowroomsAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db",)
-    list_filter = ("price", "amount_of_discount", "date_created_in_db")
+    readonly_fields = ("added_date",)
+    list_filter = ("price", "amount_of_discount", "added_date")
 
 
 @admin.register(DiscountSuppliers)
 class DiscountSuppliersAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
-    list_filter = ("start_time", "end_time", "amount_of_discount", "is_available", "date_created_in_db", "date_updated",)
+    readonly_fields = ("added_date", "date_updated",)
+    list_filter = ("start_time", "end_time", "amount_of_discount", "is_available", "added_date", "date_updated",)
 
 
 @admin.register(DiscountShowrooms)
 class DiscountShowroomsAdmin(admin.ModelAdmin):
-    readonly_fields = ("date_created_in_db", "date_updated",)
-    list_filter = (
-    "start_time", "end_time", "amount_of_discount", "is_available", "date_created_in_db", "date_updated",)
+    readonly_fields = ("added_date", "date_updated",)
+    list_filter = ("start_time", "end_time", "amount_of_discount", "is_available", "added_date", "date_updated",)
