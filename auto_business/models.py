@@ -14,13 +14,13 @@ class Cars(models.Model):
     drive = models.CharField(max_length=15)  # wheel drive, front drive, back drive
     transmission = models.CharField(max_length=12)
     body_type = models.CharField(max_length=20)
-    image_url = models.URLField(max_length=200)  # link for car photo
+    image_url = models.URLField(max_length=300)  # link for car photo
     added_date = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.brand} {0.model} {0.color} {0.year} {0.engine} {0.drive} {0.transmission}' \
-                   '{0.body_type} {0.image_url} {0.added_date} {date_updated}'
+                   '{0.body_type}'
         return template.format(self)
 
 
@@ -38,8 +38,8 @@ class Suppliers(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.name} {0.balance} {0.country} {0.email} {0.year_of_foundation} {0.description}' \
-                   '{0.number_of_buyers} {0.added_date} {0.is_available} {0.date_updated}'
+        template = '{0.name} {0.country} {0.email}'\
+                   '{0.number_of_buyers} {0.is_available}'
         return template.format(self)
 
 
@@ -55,8 +55,7 @@ class Showrooms(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.name} {0.balance} {0.country} {0.email}' \
-                   '{0.specification} {0.is_available} {0.added_date} {0.date_updated}'
+        template = '{0.name} {0.country} {0.email} {0.is_available}'
         return template.format(self)
 
 
@@ -66,11 +65,19 @@ class ShowroomsCarsForSale(models.Model):
     cars_count = models.IntegerField()
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
 
+    def __str__(self):
+        template = '{0.showroom} {0.car} {0.cars_count} {0.price}'
+        return template.format(self)
+
 
 class SuppliersCarsForSale(models.Model):
     car = models.ForeignKey(Cars, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
+
+    def __str__(self):
+        template = '{0.supplier} {0.car} {0.price}'
+        return template.format(self)
 
 
 class Buyers(models.Model):
@@ -86,8 +93,7 @@ class Buyers(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.name} {0.surname} {0.age} {0.balance} {0.country}' \
-                   '{0.sex} {0.place_of_work} {0.email} {0.added_date} {0.date_updated}'
+        template = '{0.name} {0.surname} {0.age} {0.country} {0.email}'
         return template.format(self)
 
 
@@ -100,8 +106,7 @@ class BuyersOrder(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.id_buyer} {0.id_car} {0.price}' \
-                   '{0.added_date} {0.date_updated}'
+        template = '{0.id_buyer} {0.id_car} {0.price} {0.is_available}'
         return template.format(self)
 
 
@@ -115,7 +120,7 @@ class SalesShowroomsBuyers(models.Model):
 
     def __str__(self):
         template = '{0.id_showroom} {0.id_buyer} {0.id_car}' \
-         '{0.price} {amount_of_discount} {0.added_date}'
+         '{0.price} {0.amount_of_discount} {0.added_date}'
         return template.format(self)
 
 
@@ -129,7 +134,7 @@ class SalesSuppliersShowrooms(models.Model):
 
     def __str__(self):
         template = '{0.id_showroom} {0.id_supplier} {0.id_car}' \
-                '{0.price} {amount_of_discount} {0.added_date}'
+                '{0.price} {0.amount_of_discount} {0.added_date}'
         return template.format(self)
 
 
@@ -138,16 +143,15 @@ class DiscountSuppliers(models.Model):
     description = models.TextField(null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_suppliers_id_car")  # ????
+    id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_suppliers_id_car")
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     is_available = models.BooleanField(default=True)
     added_date = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.id_suppliers} {0.description} {0.start_time}' \
-                   '{0.end_time} {0.id_car} {0.amount_of_discount} {0.is_available}' \
-                   '{0.added_date} {0.date_updated}'
+        template = '{0.id_supplier} {0.start_time} {0.end_time} {0.id_car}' \
+                   '{0.amount_of_discount} {0.is_available}'
         return template.format(self)
 
 
@@ -156,14 +160,13 @@ class DiscountShowrooms(models.Model):
     description = models.TextField(null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_showrooms_id_car")  # ????
+    id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_showrooms_id_car")
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
     is_available = models.BooleanField(default=True)
     added_date = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        template = '{0.id_showroom} {0.description} {0.start_time}' \
-                   '{0.end_time} {0.id_car} {0.amount_of_discount}' \
-                   '{0.is_available} {0.added_date} {0.date_updated}'
+        template = '{0.id_showroom} {0.start_time} {0.end_time} {0.id_car}' \
+                   '{0.amount_of_discount} {0.is_available}'
         return template.format(self)
