@@ -1,11 +1,13 @@
 from django.db import models
-from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from core.filters_models_field.decimal_range_field import DecimalRangeField
+from core.abstractmodels.date_fields import DateAddedUpdatedAvailable, DateAdded, DateUpdatedAdded
+from core.abstractmodels.discount import Discount
+from core.abstractmodels.supplier_showroom_info import Information
 
 
 # Create your models here.
-class Cars(models.Model):
+class Cars(DateUpdatedAdded, models.Model):
     brand = models.CharField(max_length=20)
     model = models.CharField(max_length=30)
     color = models.CharField(max_length=30)
@@ -15,8 +17,6 @@ class Cars(models.Model):
     transmission = models.CharField(max_length=12)
     body_type = models.CharField(max_length=20)
     image_url = models.URLField(max_length=300)  # link for car photo
-    added_date = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.brand} {0.model} {0.color} {0.year} {0.engine} {0.drive} {0.transmission}' \
@@ -24,18 +24,11 @@ class Cars(models.Model):
         return template.format(self)
 
 
-class Suppliers(models.Model):
-    name = models.CharField(max_length=50)
-    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
-    country = CountryField(multiple=True)
-    email = models.EmailField(max_length=254)
+class Suppliers(DateAddedUpdatedAvailable, Information, models.Model):
     year_of_foundation = models.DateField()
     description = models.TextField(null=True)
     number_of_buyers = models.PositiveIntegerField(default=0)
     cars = models.ManyToManyField(Cars, through='SuppliersCarsForSale')
-    is_available = models.BooleanField(default=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.name} {0.country} {0.email}'\
@@ -43,16 +36,9 @@ class Suppliers(models.Model):
         return template.format(self)
 
 
-class Showrooms(models.Model):
-    name = models.CharField(max_length=50)
-    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
-    country = CountryField(multiple=True)
-    email = models.EmailField(max_length=254)
+class Showrooms(DateAddedUpdatedAvailable, Information, models.Model):
     specification = models.JSONField(encoder=None, decoder=None)
-    is_available = models.BooleanField(default=True)
-    added_date = models.DateTimeField(auto_now_add=True)
     cars = models.ManyToManyField(Cars, through='ShowroomsCarsForSale')
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.name} {0.country} {0.email} {0.is_available}'
@@ -80,43 +66,33 @@ class SuppliersCarsForSale(models.Model):
         return template.format(self)
 
 
-class Buyers(models.Model):
-    balance = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00, default=0.00)
-    name = models.CharField(max_length=20)
+class Buyers(DateUpdatedAdded, Information, models.Model):
     surname = models.CharField(max_length=20)
     age = models.IntegerField(validators=[MinValueValidator(14), MaxValueValidator(150)])
-    country = CountryField()
     sex = models.CharField(max_length=6)
     place_of_work = models.CharField(max_length=100)
-    email = models.EmailField(max_length=254)
-    added_date = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.name} {0.surname} {0.age} {0.country} {0.email}'
         return template.format(self)
 
 
-class BuyersOrder(models.Model):
+class BuyersOrder(DateAddedUpdatedAvailable, models.Model):
     id_buyer = models.ForeignKey(Buyers, on_delete=models.PROTECT, related_name="order_id_buyers")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="order_id_car")
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
-    added_date = models.DateTimeField(auto_now_add=True)
-    is_available = models.BooleanField(default=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.id_buyer} {0.id_car} {0.price} {0.is_available}'
         return template.format(self)
 
 
-class SalesShowroomsBuyers(models.Model):
+class SalesShowroomsBuyers(DateAdded, models.Model):
     id_showroom = models.ForeignKey(Showrooms, on_delete=models.PROTECT, related_name="sales_buyers_id_showroom")
     id_buyer = models.ForeignKey(Buyers, on_delete=models.PROTECT, related_name="sales_id_buyers")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="sales_buyer_id_car")
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
-    added_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         template = '{0.id_showroom} {0.id_buyer} {0.id_car}' \
@@ -124,13 +100,12 @@ class SalesShowroomsBuyers(models.Model):
         return template.format(self)
 
 
-class SalesSuppliersShowrooms(models.Model):
+class SalesSuppliersShowrooms(DateAdded, models.Model):
     id_showroom = models.ForeignKey(Showrooms, on_delete=models.PROTECT, related_name="sales_id_showroom")
     id_supplier = models.ForeignKey(Suppliers, on_delete=models.PROTECT, related_name="sales_id_supplier")
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="sales_showroom_id_car")
     price = DecimalRangeField(max_digits=20, decimal_places=2, min_value=0.00)
     amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
-    added_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         template = '{0.id_showroom} {0.id_supplier} {0.id_car}' \
@@ -138,16 +113,9 @@ class SalesSuppliersShowrooms(models.Model):
         return template.format(self)
 
 
-class DiscountSuppliers(models.Model):
+class DiscountSuppliers(DateAddedUpdatedAvailable, Discount, models.Model):
     id_supplier = models.ForeignKey(Suppliers, on_delete=models.PROTECT, related_name="discount_id_supplier")
-    description = models.TextField(null=True)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_suppliers_id_car")
-    amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
-    is_available = models.BooleanField(default=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.id_supplier} {0.start_time} {0.end_time} {0.id_car}' \
@@ -155,16 +123,9 @@ class DiscountSuppliers(models.Model):
         return template.format(self)
 
 
-class DiscountShowrooms(models.Model):
+class DiscountShowrooms(DateAddedUpdatedAvailable, Discount, models.Model):
     id_showroom = models.ForeignKey(Showrooms, on_delete=models.PROTECT, related_name="discount_id_showroom")
-    description = models.TextField(null=True)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
     id_car = models.ForeignKey(Cars, on_delete=models.PROTECT, related_name="discount_showrooms_id_car")
-    amount_of_discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
-    is_available = models.BooleanField(default=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         template = '{0.id_showroom} {0.start_time} {0.end_time} {0.id_car}' \
