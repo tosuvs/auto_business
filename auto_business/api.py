@@ -1,11 +1,11 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-# from .filters import CarsFilter, SuppliersFilter, ShowroomsFilter, ShowroomsCarsForSaleFilter, \
+# from auto_business.filters import CarsFilter, SuppliersFilter, ShowroomsFilter, ShowroomsCarsForSaleFilter, \
 #     SuppliersCarsForSaleFilter, BuyersFilter, BuyersOrderFilter, SalesShowroomsBuyersFilter, \
 #     SalesSuppliersShowroomsFilter, DiscountShowroomsFilter, DiscountSuppliersFilter
-from .models import Cars, Suppliers, Showrooms, ShowroomsCarsForSale, SuppliersCarsForSale,\
+from auto_business.models import Cars, ShowroomsCarsForSale, SuppliersCarsForSale,\
     BuyersOrder, SalesShowroomsBuyers, SalesSuppliersShowrooms, DiscountSuppliers, DiscountShowrooms
-from .serializers import CarsSerializer, ShowroomsCarsForSaleSerializer, SalesSuppliersShowroomSerializer, \
+from auto_business.serializers import CarsSerializer, ShowroomsCarsForSaleSerializer, SalesSuppliersShowroomSerializer, \
     DiscountSuppliersSerializer, DiscountShowroomsSerializer, SuppliersCarsForSaleSerializer, \
     BuyersOrderSerializer, SalesShowroomsBuyersSerializer
 
@@ -64,8 +64,11 @@ class SalesViewSet(viewsets.ViewSet):
         sales_suppliers_showrooms = SalesSuppliersShowrooms.objects.all()
         serializer_sh_buyers = SalesShowroomsBuyersSerializer(sales_showroom_buyers, many=True)
         serializer_su_showroom = SalesSuppliersShowroomSerializer(sales_suppliers_showrooms, many=True)
-        serializer_list = [serializer_sh_buyers.data, serializer_su_showroom.data]
-        return Response(serializer_list)
+        serializer_dict = {
+            "sales_showroom_buyers": serializer_sh_buyers.data,
+            "sales_suppliers_showrooms": serializer_su_showroom.data,
+        }
+        return Response(serializer_dict, status=status.HTTP_200_OK)
 
 
 class DiscountViewSet(viewsets.ViewSet):
@@ -78,6 +81,9 @@ class DiscountViewSet(viewsets.ViewSet):
         discounts_suppliers = DiscountSuppliers.objects.all()
         serializer_discounts_showrooms = DiscountShowroomsSerializer(discounts_showrooms, many=True)
         serializer_discounts_suppliers = DiscountSuppliersSerializer(discounts_suppliers, many=True)
-        serializer_list = [serializer_discounts_showrooms.data, serializer_discounts_suppliers.data]
-        return Response(serializer_list)
+        serializer_dict = {
+            "discounts_showrooms": serializer_discounts_showrooms.data,
+            "discounts_suppliers": serializer_discounts_suppliers.data,
+        }
+        return Response(serializer_dict, status=status.HTTP_200_OK)
     # filterset_class = DiscountShowroomsFilter, DiscountSuppliersFilter

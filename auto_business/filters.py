@@ -17,8 +17,8 @@ class CarsFilter(filters.FilterSet):
 
     class Meta:
         model = Cars
-        fields = ['brand', 'model', 'color', 'year', 'engine', 'drive',
-                  'transmission', 'body_type', 'added_date', 'date_updated']
+        fields = ('brand', 'model', 'color', 'year', 'engine', 'drive',
+                  'transmission', 'body_type', 'added_date', 'date_updated')
 
 
 class SuppliersFilter(filters.FilterSet):
@@ -32,7 +32,8 @@ class SuppliersFilter(filters.FilterSet):
 
     class Meta:
         model = Suppliers
-        fields = ['name', 'year_of_foundation', 'is_available', 'number_of_buyers', 'added_date', 'date_updated', 'email']
+        fields = ('name', 'year_of_foundation', 'is_available', 'number_of_buyers',
+                  'added_date', 'date_updated', 'email')
 
 
 class ShowroomsFilter(filters.FilterSet):
@@ -44,7 +45,7 @@ class ShowroomsFilter(filters.FilterSet):
 
     class Meta:
         model = Showrooms
-        fields = ['name', 'is_available', 'added_date', 'date_updated', 'email']
+        fields = ('name', 'is_available', 'added_date', 'date_updated', 'email')
 
 
 class ShowroomsCarsForSaleFilter(filters.FilterSet):
@@ -55,7 +56,7 @@ class ShowroomsCarsForSaleFilter(filters.FilterSet):
 
     class Meta:
         model = ShowroomsCarsForSale
-        fields = ['showroom', 'car', 'cars_count', 'price']
+        fields = ('showroom', 'car', 'cars_count', 'price')
 
 
 class SuppliersCarsForSaleFilter(filters.FilterSet):
@@ -65,7 +66,7 @@ class SuppliersCarsForSaleFilter(filters.FilterSet):
 
     class Meta:
         model = SuppliersCarsForSale
-        fields = ['supplier', 'car', 'price']
+        fields = ('supplier', 'car', 'price')
 
 
 class BuyersFilter(filters.FilterSet):
@@ -80,7 +81,7 @@ class BuyersFilter(filters.FilterSet):
 
     class Meta:
         model = Buyers
-        fields = ['name', 'surname', 'age', 'sex', 'place_of_work', 'added_date', 'date_updated', 'email']
+        fields = ('name', 'surname', 'age', 'sex', 'place_of_work', 'added_date', 'date_updated', 'email')
 
 
 class BuyersOrderFilter(filters.FilterSet):
@@ -93,7 +94,7 @@ class BuyersOrderFilter(filters.FilterSet):
 
     class Meta:
         model = BuyersOrder
-        fields = ['id_buyer', 'id_car', 'price', 'is_available', 'added_date', 'date_updated']
+        fields = ('id_buyer', 'id_car', 'price', 'is_available', 'added_date', 'date_updated')
 
 
 class SalesShowroomsBuyersFilter(filters.FilterSet):
@@ -106,7 +107,7 @@ class SalesShowroomsBuyersFilter(filters.FilterSet):
 
     class Meta:
         model = SalesShowroomsBuyers
-        fields = ['id_buyer', 'id_showroom', 'id_car', 'price', 'amount_of_discount', 'added_date']
+        fields = ('id_buyer', 'id_showroom', 'id_car', 'price', 'amount_of_discount', 'added_date')
 
 
 class SalesSuppliersShowroomsFilter(filters.FilterSet):
@@ -119,7 +120,7 @@ class SalesSuppliersShowroomsFilter(filters.FilterSet):
 
     class Meta:
         model = SalesSuppliersShowrooms
-        fields = ['id_supplier', 'id_showroom', 'id_car', 'price', 'amount_of_discount', 'added_date']
+        fields = ('id_supplier', 'id_showroom', 'id_car', 'price', 'amount_of_discount', 'added_date')
 
 
 class DiscountSuppliersFilter(filters.FilterSet):
@@ -135,8 +136,8 @@ class DiscountSuppliersFilter(filters.FilterSet):
 
     class Meta:
         model = DiscountSuppliers
-        fields = ['id_supplier', 'description', 'start_time', 'end_time', 'id_car', 'is_available', 'date_updated',
-                  'amount_of_discount', 'added_date']
+        fields = ('id_supplier', 'description', 'start_time', 'end_time', 'id_car', 'is_available', 'date_updated',
+                  'amount_of_discount', 'added_date')
 
 
 class DiscountShowroomsFilter(filters.FilterSet):
@@ -150,8 +151,7 @@ class DiscountShowroomsFilter(filters.FilterSet):
     added_date = filters.DateFilter(field_name="added_date", lookup_expr="exact")
     date_updated = filters.DateFilter(field_name="date_updated", lookup_expr="exact")
 
-
-class Meta:
-    model = DiscountShowrooms
-    fields = ['id_showroom', 'description', 'start_time', 'end_time', 'id_car', 'is_available', 'date_updated',
-              'amount_of_discount', 'added_date']
+    class Meta:
+        model = DiscountShowrooms
+        fields = ('id_showroom', 'description', 'start_time', 'end_time', 'id_car', 'is_available', 'date_updated',
+              'amount_of_discount', 'added_date')

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django_countries.serializers import CountryFieldMixin
-from .models import Cars, Suppliers, Showrooms, ShowroomsCarsForSale, SuppliersCarsForSale,\
+from auto_business.models import Cars, Suppliers, Showrooms, ShowroomsCarsForSale, SuppliersCarsForSale,\
     Buyers, BuyersOrder, SalesShowroomsBuyers, SalesSuppliersShowrooms, DiscountSuppliers, DiscountShowrooms
 
 
