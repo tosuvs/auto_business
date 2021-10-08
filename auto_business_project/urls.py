@@ -15,8 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from auto_business_project.yasg import urlpatterns as doc_urls
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('auto_business.urls'))
+    path('', include('auto_business.urls')),
+    path('users/', include('users.urls'))
 ]
+
+urlpatterns += doc_urls
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += path('__debug__/', include(debug_toolbar.urls)),

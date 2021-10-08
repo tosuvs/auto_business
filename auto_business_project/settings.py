@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEBUG")
 
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost.localdomain', '127.0.0.1']
 
 # Application definition
 
@@ -43,24 +43,39 @@ INSTALLED_APPS = [
     'django_countries',
     'django_filters',
     'rest_framework',
-    # 'rest_framework.authtoken',
+    'corsheaders',
+    'drf_yasg',
+    'debug_toolbar',
 
     'auto_business',
+    'users',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
-    # ],
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework.authentication.TokenAuthentication',
-    # ],
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
 
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.my_jwt_response_handler'
+}
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,6 +83,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'auto_business_project.urls'
@@ -145,6 +162,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#DEBUG_TOOLBAR
+INTERNAL_IPS = [
+    'localhost.localdomain',
+    '127.0.0.1',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
